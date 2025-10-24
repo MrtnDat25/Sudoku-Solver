@@ -8,12 +8,12 @@ module.exports = function (app) {
   app.route("/api/check").post((req, res) => {
     const { puzzle, coordinate, value } = req.body;
 
-    // 1️⃣ Kiểm tra thiếu field
+    // Kiểm tra trường bắt buộc
     if (!puzzle || !coordinate || !value) {
       return res.json({ error: "Required field(s) missing" });
     }
 
-    // 2️⃣ Kiểm tra tọa độ hợp lệ
+    // Kiểm tra tọa độ hợp lệ
     const row = coordinate[0];
     const column = coordinate[1];
     if (
@@ -24,12 +24,12 @@ module.exports = function (app) {
       return res.json({ error: "Invalid coordinate" });
     }
 
-    // 3️⃣ Kiểm tra value hợp lệ (chỉ 1 ký tự 1–9)
+    //Kiểm tra value hợp lệ (chỉ 1 ký tự 1–9)
     if (!/^[1-9]$/.test(value)) {
       return res.json({ error: "Invalid value" });
     }
 
-    // 4️⃣ Kiểm tra puzzle hợp lệ
+    // Kiểm tra puzzle hợp lệ
     if (puzzle.length !== 81) {
       return res.json({ error: "Expected puzzle to be 81 characters long" });
     }
@@ -38,7 +38,7 @@ module.exports = function (app) {
       return res.json({ error: "Invalid characters in puzzle" });
     }
 
-    // 5️⃣ Nếu giá trị đã có sẵn trong puzzle và trùng với value → valid: true
+    // Nếu giá trị đã có sẵn trong puzzle và trùng với value → valid: true
     const rowIndex = row.toUpperCase().charCodeAt(0) - "A".charCodeAt(0);
     const colIndex = parseInt(column) - 1;
     const puzzleValue = puzzle[rowIndex * 9 + colIndex];
@@ -46,7 +46,7 @@ module.exports = function (app) {
       return res.json({ valid: true });
     }
 
-    // 6️⃣ Kiểm tra xung đột hàng, cột, vùng
+    // Kiểm tra xung đột hàng, cột, vùng
     const validRow = solver.checkRowPlacement(puzzle, row, column, value);
     const validCol = solver.checkColPlacement(puzzle, row, column, value);
     const validReg = solver.checkRegionPlacement(puzzle, row, column, value);
